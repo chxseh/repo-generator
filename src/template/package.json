@@ -1,0 +1,36 @@
+{
+    "name": "project-name",
+    "version": "1.0.0",
+    "description": "project-description",
+    "main": "./src/app.js",
+    "engines": {
+        "node": ">=16.14.0"
+    },
+    "type": "module",
+    "scripts": {
+        "start": "node ./src/app.js",
+        "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/{{AUTHOR}}/{{REPO}}.git"
+    },
+    "keywords": [],
+    "author": "Chase <c@chse.dev> (https://chse.dev)",
+    "contributors": [
+        ""
+    ],
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/{{AUTHOR}}/{{REPO}}/issues"
+    },
+    "homepage": "https://github.com/{{AUTHOR}}/{{REPO}}#readme",
+    "dependencies": {},
+    "devDependencies": {
+        "eslint": "8.30.0",
+        "eslint-config-chase": "1.0.5",
+        "eslint-plugin-import": "2.26.0",
+        "eslint-plugin-jsdoc": "39.6.4",
+        "eslint-plugin-unicorn": "45.0.2"
+    }
+}

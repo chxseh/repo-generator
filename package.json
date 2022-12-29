@@ -1,0 +1,43 @@
+{
+    "name": "repo-generator",
+    "version": "1.0.0",
+    "description": "A tool to generate new GitHub repos according to my specifications.",
+    "main": "./src/app.js",
+    "engines": {
+        "node": ">=16.14.0"
+    },
+    "type": "module",
+    "scripts": {
+        "start": "node ./src/app.js",
+        "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/chxseh/repo-generator.git"
+    },
+    "keywords": [],
+    "author": "Chase <c@chse.dev> (https://chse.dev)",
+    "contributors": [
+        ""
+    ],
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/chxseh/repo-generator/issues"
+    },
+    "homepage": "https://github.com/chxseh/repo-generator#readme",
+    "dependencies": {
+        "@octokit/rest": "19.0.5",
+        "chalk": "5.2.0",
+        "fs-extra": "11.1.0",
+        "libsodium": "0.7.10",
+        "libsodium-wrappers": "0.7.10",
+        "readline-sync": "1.4.10"
+    },
+    "devDependencies": {
+        "eslint": "8.30.0",
+        "eslint-config-chase": "1.0.5",
+        "eslint-plugin-import": "2.26.0",
+        "eslint-plugin-jsdoc": "39.6.4",
+        "eslint-plugin-unicorn": "45.0.2"
+    }
+}
