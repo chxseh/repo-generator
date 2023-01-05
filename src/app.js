@@ -25,7 +25,7 @@ const ghRepoPrivate = readlineSync.keyInYN(`Is this a private repo?: `);
 const ghRepoDisableProjects = readlineSync.keyInYN(`Disable Projects and Wikis?: `);
 const ghRepoDisableIssues = readlineSync.keyInYN(`Disable Issues?: `);
 const ghRepoNodejs = readlineSync.keyInYN(`Is this a nodejs project (or will this project ever require JS linting)?: `);
-const diskPath = readlineSync.questionPath(`Where are we saving this repo on disk?: (i.e. ~/Documents/${ ghRepoName })`, {
+const diskPath = readlineSync.questionPath(`Where are we saving this repo on disk?: (i.e. ~/Documents/${ ghRepoName }) `, {
     isDirectory: true,
     exists: undefined,
     create: true
@@ -71,7 +71,9 @@ if (ghRepoNodejs)
     packageJson = packageJson.replaceAll(`project-name`, ghRepoName);
     packageJson = packageJson.replaceAll(`project-description`, ghRepoDescription);
     fs.writeFileSync(`${ diskPath }/package.json`, packageJson, `utf8`);
-    childProcess.execSync(`cd ${ diskPath } && npx npm-check-updates -u && npm i`, { stdio: `ignore`, stdout: `ignore`, stderr: `ignore` });
+    childProcess.execSync(`npx npm-check-updates -u && npm i`, {
+        cwd: `${ diskPath }`, stdio: `inherit`, stdout: `ignore`, stderr: `ignore`
+    });
 }
 else
 {
@@ -101,16 +103,10 @@ const repoOptions = {
     /* eslint-enable camelcase */
 };
 
-// eslint-disable-next-line unicorn/prefer-ternary
-if (ghUserType === `user`)
-    await octokit.repos.createForAuthenticatedUser({ ...repoOptions });
-else
-{
-    await octokit.repos.createInOrg({
-        org: ghUsername,
-        ...repoOptions
-    });
-}
+await (ghUserType === `user` ? octokit.repos.createForAuthenticatedUser({ ...repoOptions }) : octokit.repos.createInOrg({
+    org: ghUsername,
+    ...repoOptions
+}));
 
 await libsodium.ready;
 
@@ -121,24 +117,19 @@ let key = await octokit.request(`GET /repos/{owner}/{repo}/actions/secrets/publi
 const keyId = key.data.key_id;
 key = key.data.key;
 
-const value = `${ ghPat }`;
-const messageBytes = Buffer.from(value);
-const keyBytes = Buffer.from(key, `base64`);
-
-const encryptedBytes = libsodium.crypto_box_seal(messageBytes, keyBytes);
-const encrypted = Buffer.from(encryptedBytes).toString(`base64`);
+const encryptedValue = Buffer.from(libsodium.crypto_box_seal(Buffer.from(ghPat), Buffer.from(key, `base64`))).toString(`base64`);
 
 await octokit.actions.createOrUpdateRepoSecret({
     owner: ghUsername,
     repo: ghRepoName,
     /* eslint-disable camelcase */
     secret_name: `GH_PAT`,
-    encrypted_value: encrypted,
+    encrypted_value: encryptedValue,
     key_id: keyId
     /* eslint-enable camelcase */
 });
 
-// Push the repo to GitHub
-childProcess.execSync(`cd ${ diskPath } && git init && git add . && git commit -m "Initial Commit" && git branch -M main && git remote add origin https://github.com/${ ghUsername }/${ ghRepoName }.git && git push -u origin main`, { stdio: `ignore`, stdout: `ignore`, stderr: `ignore` });
-
+childProcess.execSync(`git init && git add . && git commit -m "Initial Commit" && git branch -M main && git remote add origin https://github.com/${ ghUsername }/${ ghRepoName }.git && git push -u origin main`, {
+    cwd: `${ diskPath }`, stdio: `inherit`, stdout: `ignore`, stderr: `ignore`
+});
 console.log(chalk.green(`Done! Your repo is ready at:\nhttps://github.com/${ ghUsername }/${ ghRepoName }`));
