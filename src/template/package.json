@@ -27,10 +27,10 @@
     "homepage": "https://github.com/{{AUTHOR}}/{{REPO}}#readme",
     "dependencies": {},
     "devDependencies": {
-        "eslint": "8.31.0",
-        "eslint-config-chase": "1.0.5",
-        "eslint-plugin-import": "2.26.0",
-        "eslint-plugin-jsdoc": "39.6.4",
+        "eslint": "8.33.0",
+        "eslint-config-chase": "1.0.6",
+        "eslint-plugin-import": "2.27.5",
+        "eslint-plugin-jsdoc": "39.7.5",
         "eslint-plugin-unicorn": "45.0.2"
     }
 }

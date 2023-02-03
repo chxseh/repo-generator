@@ -74,6 +74,9 @@ if (ghRepoNodejs)
     childProcess.execSync(`npx npm-check-updates -u && npm i`, {
         cwd: `${ diskPath }`, stdio: `inherit`, stdout: `ignore`, stderr: `ignore`
     });
+    let makefile = fs.readFileSync(`${ diskPath }/Makefile`, `utf8`);
+    makefile = `${ makefile }\nupdate: ## Bumps installed deps.\n\t@npx npm-check-updates -u && npm install\n`;
+    fs.writeFileSync(`${ diskPath }/Makefile`, makefile, `utf8`);
 }
 else
 {
@@ -126,6 +129,17 @@ await octokit.actions.createOrUpdateRepoSecret({
     secret_name: `GH_PAT`,
     encrypted_value: encryptedValue,
     key_id: keyId
+    /* eslint-enable camelcase */
+});
+
+// Set the repo's default workflow permissions to read/write
+// Workaround for: https://github.blog/changelog/2023-02-02-github-actions-updating-the-default-github_token-permissions-to-read-only
+await octokit.request(`PUT /repos/{owner}/{repo}/actions/permissions/workflow`, {
+    owner: ghUsername,
+    repo: ghRepoName,
+    /* eslint-disable camelcase */
+    default_workflow_permissions: `write`,
+    can_approve_pull_request_reviews: true
     /* eslint-enable camelcase */
 });
 
