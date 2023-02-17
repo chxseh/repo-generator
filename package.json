@@ -29,7 +29,7 @@
         "@octokit/rest": "19.0.7",
         "chalk": "5.2.0",
         "fs-extra": "11.1.0",
-        "libsodium": "0.7.10",
+        "libsodium": "0.7.11",
         "libsodium-wrappers": "0.7.10",
         "readline-sync": "1.4.10"
     },
